@@ -8,17 +8,7 @@ export class OrdersController {
 
     @Post()
     create(@Body() body: CreateOrderDto) {
-        try {
-            if (!body.customerId || !body.sellerId) {
-                throw new Error('Se requiere customerId y sellerId');
-            }
-            return this.ordersService.create(body);
-        } catch (error) {
-            return {
-                status: error.status,
-                message: error.message,
-            }
-        }
+        return this.ordersService.create(body);
     }
 
     @Get()

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Order } from './entities/order.entity';
 import { v4 as uuid } from 'uuid';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -53,7 +53,7 @@ export class OrdersService {
 
     confirmOrder(orderId: string): Order {
         const order = this.orders.find((o) => o.id === orderId);
-        if (!order) throw new Error('Pedido no encontrado');
+        if (!order) throw new NotFoundException('Pedido no encontrado');
 
         order.status = 'confirmed';
 
@@ -66,11 +66,11 @@ export class OrdersService {
 
     completeOrder(orderId: string, code: string) {
         const order = this.orders.find((o) => o.id === orderId);
-        if (!order) throw new Error('Pedido no encontrado');
-        if (order.status !== 'picked_up') throw new Error('Pedido no está en tránsito');
+        if (!order) throw new NotFoundException('Pedido no encontrado');
+        if (order.status !== 'picked_up') throw new BadRequestException('Pedido no está en tránsito');
 
         if (order.confirmationCode !== code) {
-            throw new Error('Código de confirmación inválido');
+            throw new BadRequestException('Código de confirmación inválido');
         }
 
         const customer = this.customersService.findById(order.customerId);
@@ -81,8 +81,8 @@ export class OrdersService {
 
     pickUpOrder(orderId: string): Order {
         const order = this.orders.find((o) => o.id === orderId);
-        if (!order) throw new Error('Pedido no encontrado');
-        if (order.status !== 'assigned') throw new Error('Pedido no asignado');
+        if (!order) throw new NotFoundException('Pedido no encontrado');
+        if (order.status !== 'assigned') throw new BadRequestException('Pedido no asignado');
 
         const customer = this.customersService.findById(order.customerId);
         order.status = 'picked_up';
@@ -92,7 +92,7 @@ export class OrdersService {
 
     assignRider(orderId: string, rider: Rider): Order {
         const order = this.orders.find((o) => o.id === orderId);
-        if (!order) throw new Error('Pedido no encontrado');
+        if (!order) throw new NotFoundException('Pedido no encontrado');
 
         order.riderId = rider.id;
         order.status = 'assigned';

@@ -18,6 +18,11 @@ export class RidersService {
         if (rider) rider.available = false;
     }
 
+    markAvailable(riderId: string) {
+        const rider = this.riders.find((r) => r.id === riderId);
+        if (rider) rider.available = true;
+    }
+
     findById(riderId: string) {
         return this.riders.find((r) => r.id === riderId);
     }
