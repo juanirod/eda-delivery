@@ -11,10 +11,12 @@ import { RiderOrderAssignedListener } from './rider/order-assigned.listener';
 import { SellerOrderAssginedListener } from './seller/order-assigned.listener';
 import { SellerOrderCreatedListener } from './seller/order-created.listener';
 import { CustomerOrderAssignedListener } from './customer/order-assigned.listener';
+import { CustomersModule } from 'src/customers/customers.module';
+import { SellersModule } from 'src/sellers/sellers.module';
 
 
 @Module({
-    imports: [OrdersModule, RidersModule],
+    imports: [OrdersModule, RidersModule, CustomersModule,SellersModule],
     providers: [
         CustomerOrderConfirmedListener,
         CustomerOrderCreatedListener,

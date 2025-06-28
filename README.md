@@ -2,97 +2,65 @@
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+# Plataforma de Delivery con Arquitectura Orientada a Eventos (EDA)
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Este es un backend para una plataforma de delivery, construido con [NestJS](https://nestjs.com/), y es un ejemplo práctico de cómo las diferentes partes de un sistema pueden comunicarse de manera desacoplada 
 
-## Description
+## ¿De qué se trata este proyecto?
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Imagina una app como Rappi o Pedidos Ya. Por detrás, hay muchas cosas pasando: un cliente crea una orden, un restaurante la acepta, un repartidor la recoge y finalmente se entrega. Con este proyecto busqué simular esa lógica de negocio a una menor escala.
 
-## Project setup
+La parte interesante es *cómo* se comunican estas distintas entidades (clientes, restaurantes, repartidores). En lugar de que un servicio llame directamente a otro (lo que crea un acoplamiento fuerte), usamos eventos. Por ejemplo, cuando se crea una orden, el sistema simplemente "grita": "¡Hey, se creó una nueva orden!". Otros módulos que estén interesados en ese evento (como el de restaurantes o el de clientes) reaccionarán y harán lo que necesiten hacer.
 
-```bash
-$ pnpm install
-```
+Eso, en esencia, es la **Arquitectura Orientada a Eventos (EDA)**.
 
-## Compile and run the project
+## ¿Cómo está organizado?
 
-```bash
-# development
-$ pnpm run start
+La estructura del código está pensada para ser bastante intuitiva:
 
-# watch mode
-$ pnpm run start:dev
+-   `src/`: Aquí vive toda la lógica de la aplicación.
+    -   `main.ts`: El punto de entrada de nuestra app.
+    -   `app.module.ts`: El módulo raíz que une todo.
+    -   **Módulos de Dominio (`customers`, `orders`, `riders`, `sellers`):** Cada una de estas carpetas representa una parte clave de nuestro negocio. Tienen sus propios controladores (para manejar las peticiones HTTP), servicios (donde está la lógica) y entidades (la forma de los datos).
+    -   **El corazón de la EDA (`events`):** Esta carpeta es fundamental para entender la arquitectura. Aquí es donde definimos los "listeners" (oyentes). Cada vez que un servicio emite un evento (por ejemplo, `OrderCreatedEvent`), los listeners correspondientes en esta carpeta se activan para realizar acciones. Verás que los listeners están organizados por el actor que reacciona (cliente, repartidor, etc.).
 
-# production mode
-$ pnpm run start:prod
-```
+## ¡Manos a la obra!
 
-## Run tests
+Para poner a correr el proyecto en tu máquina, solo necesitas seguir estos pasos.
 
-```bash
-# unit tests
-$ pnpm run test
+1.  **Instalar dependencias:**
+    Asegúrate de tener [pnpm](https://pnpm.io/) instalado. Luego, desde la raíz del proyecto, ejecuta:
+    ```bash
+    pnpm install
+    ```
 
-# e2e tests
-$ pnpm run test:e2e
+2.  **Ejecutar la aplicación en modo de desarrollo:**
+    Este comando iniciará el servidor y se reiniciará automáticamente cada vez que hagas un cambio en el código.
+    ```bash
+    pnpm run start:dev
+    ```
 
-# test coverage
-$ pnpm run test:cov
-```
+¡Y listo! El servidor estará corriendo en `http://localhost:3000`.
 
-## Deployment
+## Probando que todo funcione
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+La calidad del software es importante, por eso tenemos tests. Puedes ejecutarlos con los siguientes comandos:
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+-   **Tests unitarios:**
+    ```bash
+    pnpm run test
+    ```
 
-```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
-```
+-   **Tests End-to-End (E2E):**
+    Estos tests simulan peticiones HTTP reales a nuestros endpoints.
+    ```bash
+    pnpm run test:e2e
+    ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+-   **Cobertura de tests:**
+    Para ver qué porcentaje de nuestro código está cubierto por los tests.
+    ```bash
+    pnpm run test:cov
+    ```
 
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Espero que disfrutes explorando el código y que te sea de gran ayuda para entender los conceptos de EDA. ¡Siéntete libre de experimentar y romper cosas! Es la mejor manera de aprender.

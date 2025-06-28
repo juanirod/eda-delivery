@@ -16,7 +16,7 @@ export class OrderConfirmedListener {
         const rider = this.ridersService.findAvailable();
 
         if (rider) {
-            this.ordersService.assignRider(order.id, rider.id);
+            this.ordersService.assignRider(order.id, rider);
         }
 
     }

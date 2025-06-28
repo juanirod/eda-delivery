@@ -1,13 +1,24 @@
 import { Controller, Post, Body, Get, Patch, Param } from '@nestjs/common';
 import { OrdersService } from './orders.service';
+import { CreateOrderDto } from './dto/create-order.dto';
 
 @Controller('orders')
 export class OrdersController {
     constructor(private readonly ordersService: OrdersService) { }
 
     @Post()
-    create(@Body() body: { customerId: string; sellerId: string }) {
-        return this.ordersService.create(body.customerId, body.sellerId);
+    create(@Body() body: CreateOrderDto) {
+        try {
+            if (!body.customerId || !body.sellerId) {
+                throw new Error('Se requiere customerId y sellerId');
+            }
+            return this.ordersService.create(body);
+        } catch (error) {
+            return {
+                status: error.status,
+                message: error.message,
+            }
+        }
     }
 
     @Get()

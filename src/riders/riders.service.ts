@@ -3,10 +3,10 @@ import { Rider } from './entities/rider.entity';
 
 @Injectable()
 export class RidersService {
-    private riders:Rider[] = [
-        { id: 'rider1', name: 'Rider 1', available: true },
-        { id: 'rider2', name: 'Rider 2', available: true },
-        { id: 'rider3', name: 'Rider 3', available: false },
+    private riders: Rider[] = [
+        { id: 'rider1', name: 'Juan', available: true },
+        { id: 'rider2', name: 'Richard', available: true },
+        { id: 'rider3', name: 'Pedro', available: false },
     ];
 
     findAvailable() {
@@ -16,5 +16,10 @@ export class RidersService {
     markBusy(riderId: string) {
         const rider = this.riders.find((r) => r.id === riderId);
         if (rider) rider.available = false;
-      }
+    }
+
+    findById(riderId: string) {
+        return this.riders.find((r) => r.id === riderId);
+    }
+
 }
