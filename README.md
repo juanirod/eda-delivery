@@ -42,25 +42,3 @@ Para poner a correr el proyecto en tu máquina, solo necesitas seguir estos paso
 
 ¡Y listo! El servidor estará corriendo en `http://localhost:3000`.
 
-## Probando que todo funcione
-
-La calidad del software es importante, por eso tenemos tests. Puedes ejecutarlos con los siguientes comandos:
-
--   **Tests unitarios:**
-    ```bash
-    pnpm run test
-    ```
-
--   **Tests End-to-End (E2E):**
-    Estos tests simulan peticiones HTTP reales a nuestros endpoints.
-    ```bash
-    pnpm run test:e2e
-    ```
-
--   **Cobertura de tests:**
-    Para ver qué porcentaje de nuestro código está cubierto por los tests.
-    ```bash
-    pnpm run test:cov
-    ```
-
-Espero que disfrutes explorando el código y que te sea de gran ayuda para entender los conceptos de EDA. ¡Siéntete libre de experimentar y romper cosas! Es la mejor manera de aprender.
